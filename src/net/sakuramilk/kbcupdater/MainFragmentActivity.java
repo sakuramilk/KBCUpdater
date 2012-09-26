@@ -22,7 +22,7 @@ public class MainFragmentActivity extends FragmentActivity {
         final ActionBar bar = getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE, ActionBar.DISPLAY_SHOW_TITLE);
-        bar.setTitle(getText(R.string.app_name) + " V0.1.0");
+        bar.setTitle(R.string.app_name);
 
         mPagerAdapter = new TabsFragmentAdapter(this, mViewPager);
         

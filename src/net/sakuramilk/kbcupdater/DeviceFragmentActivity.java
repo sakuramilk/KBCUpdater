@@ -3,7 +3,6 @@ package net.sakuramilk.kbcupdater;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class DeviceFragmentActivity extends PreferenceFragment implements Prefer
 	private PreferenceManager mPrefManager;
 	private PreferenceScreen mRootPref;
 	private List<EntryItem> mItemList;
-	
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,12 +49,12 @@ public class DeviceFragmentActivity extends PreferenceFragment implements Prefer
         dlg.show();
 
         final Handler handler = new Handler() {
-    		@Override
+			@Override
             public void handleMessage(Message msg) {
     			dlg.dismiss();
-    			
-    			HashMap<String, ArrayList<Preference> > categoryList = new HashMap<String, ArrayList<Preference> >();
-                
+
+    			HashMap<String, ArrayList<Preference>> categoryList = new HashMap<String, ArrayList<Preference>>();
+
     			for (EntryItem item : mItemList) {
     				ArrayList<Preference> list = categoryList.get(item.category);
     				if (list == null) {
@@ -71,10 +70,11 @@ public class DeviceFragmentActivity extends PreferenceFragment implements Prefer
     				pref.setOnPreferenceClickListener(listener);
     				list.add(pref);
     			}
-    			
-    			ArrayList<Map.Entry<String, ArrayList<Preference>> > entries = new ArrayList<Entry<String, ArrayList<Preference>>>(categoryList.entrySet());
-    			Collections.sort(entries, new Comparator(){
-    			    public int compare(Object obj1, Object obj2){
+
+    			ArrayList<Map.Entry<String, ArrayList<Preference>>> entries = new ArrayList<Entry<String, ArrayList<Preference>>>(categoryList.entrySet());
+    			Collections.sort(entries, new Comparator<Object>(){
+					@SuppressWarnings("rawtypes")
+					public int compare(Object obj1, Object obj2){
     			        Map.Entry ent1 =(Map.Entry)obj1;
     			        Map.Entry ent2 =(Map.Entry)obj2;
     			        String val1 = (String) ent1.getKey();
@@ -82,7 +82,7 @@ public class DeviceFragmentActivity extends PreferenceFragment implements Prefer
     			        return val1.compareTo(val2);
     			    }
     			});
-    			
+
     			for (Entry<String, ArrayList<Preference>> list : entries) {
     				for (Preference pref : list.getValue()) {
     					mRootPref.addPreference(pref);
@@ -107,23 +107,29 @@ public class DeviceFragmentActivity extends PreferenceFragment implements Prefer
 
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
-		String url = ((EntryItemPreference)preference).getEnteryItem().url;
-		
-		if (url.indexOf("www1.axfc.net") != 0) {
+		final String url = ((EntryItemPreference)preference).getEnteryItem().url;
+
+		if (url.indexOf("www1.axfc.net") > 0) {
 			Intent i = new Intent(Intent.ACTION_VIEW);
 			i.setData(Uri.parse(url));
 			startActivity(i);
-			
 		} else {
-			String fileName = url.substring(url.lastIndexOf("/") + 1);
-	
-			DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-			request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
-			request.allowScanningByMediaScanner();
-			request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-	
-			DownloadManager dm = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-			dm.enqueue(request);
+            final ConfirmDialog confirmDialog = new ConfirmDialog(getActivity());
+            confirmDialog.setResultListener(new ConfirmDialog.ResultListener() {
+                @Override
+                public void onYes() {
+        			String fileName = url.substring(url.lastIndexOf("/") + 1);
+
+        			DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        			request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+        			request.allowScanningByMediaScanner();
+        			request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        			DownloadManager dm = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        			dm.enqueue(request);
+                }
+            });
+            confirmDialog.show(R.string.comfirm_download_title, R.string.comfirm_download_summary);
 		}
 
 		return false;

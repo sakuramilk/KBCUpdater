@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.sakuramilk.kbcupdater"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="0.1.0a"
+    android:versionCode="1001" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -14,7 +14,8 @@
         android:label="@string/app_name" >
         <provider
             android:name="EntryItemProvider"
-            android:authorities="net.sakuramilk.kbcupdater.entryitemprovider" />
+            android:authorities="net.sakuramilk.kbcupdater.entryitemprovider"
+            android:exported="false" />
         <activity
             android:name=".MainFragmentActivity" >
             <intent-filter>
