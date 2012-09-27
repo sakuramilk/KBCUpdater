@@ -1,9 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">KBC Updater</string>
-    <string name="wait_for_result">Now loading\.\.\.</string>
+    <string name="wait_for_result">Now loading</string>
+    <string name="update_list">Update list</string>
     
     <string name="comfirm_download_title">Download file</string>
     <string name="comfirm_download_summary">Do you want to start the download?</string>
+    
+    <string name="update_interval">Interval to check for updates</string>
+    <string name="update_notify">Update notification</string>
+    <string name="update_count"> update items</string>
 
 </resources>

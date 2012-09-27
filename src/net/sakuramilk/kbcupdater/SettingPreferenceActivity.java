@@ -16,12 +16,18 @@
 
 package net.sakuramilk.kbcupdater;
 
-public class EntryItem {
-	public String category;
-	public String subCategory;
-	public String title;
-	public String name;
-	public String comment;
-	public String url;
-	public boolean update;
+import android.content.Intent;
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+
+public class SettingPreferenceActivity extends PreferenceActivity {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingPreferenceFragment.class.getName());
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS, intent.getExtras());
+        
+        super.onCreate(savedInstanceState);
+    }
 }

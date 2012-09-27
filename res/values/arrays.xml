@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string-array name="update_interval_entries">
+       <item>1 hour</item>
+		<item>3 hours</item>
+		<item>6 hours</item>
+		<item>12 hours</item>
+		<item>1 day</item>
+	</string-array>
+	<string-array name="update_interval_values" translatable="false">
+		<item>60</item>
+		<item>180</item>
+		<item>360</item>
+		<item>720</item>
+		<item>1440</item>
+	</string-array>
+</resources>

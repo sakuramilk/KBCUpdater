@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 sakuramilk <c.sakuramilk@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.sakuramilk.kbcupdater;
 
 import android.content.ContentProvider;
@@ -26,6 +42,9 @@ public class EntryItemProvider extends ContentProvider {
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("CREATE TABLE " + DB_TABLE_NAME + " (" +
             		BaseColumns._ID + " INTEGER PRIMARY KEY," +
+            		"target_url TEXT," +
+            		"category TEXT," +
+            		"sub_category TEXT," +
             		"title TEXT," +
             		"name TEXT," +
             		"comment TEXT," +
@@ -42,6 +61,8 @@ public class EntryItemProvider extends ContentProvider {
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
+		SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        db.delete(DB_TABLE_NAME, selection, selectionArgs);
 		return 0;
 	}
 
@@ -68,7 +89,7 @@ public class EntryItemProvider extends ContentProvider {
 		SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(DB_TABLE_NAME);
-        Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, null);
+        Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         return c;
 	}
 
@@ -76,5 +97,4 @@ public class EntryItemProvider extends ContentProvider {
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 		return 0;
 	}
-
 }

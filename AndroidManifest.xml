@@ -1,21 +1,34 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.sakuramilk.kbcupdater"
-    android:versionName="0.1.0a"
-    android:versionCode="1001" >
+    android:versionName="0.1.0"
+    android:versionCode="1010" >
 
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="15" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
+
+        <receiver
+            android:name=".BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name="EntryItemProvider"
             android:authorities="net.sakuramilk.kbcupdater.entryitemprovider"
             android:exported="false" />
+
+        <service android:name=".UpdateService" />
+
         <activity
             android:name=".MainFragmentActivity" >
             <intent-filter>
@@ -23,6 +36,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".SettingPreferenceActivity" />
     </application>
 
 </manifest>

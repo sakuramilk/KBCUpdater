@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 sakuramilk <c.sakuramilk@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.sakuramilk.kbcupdater;
 
 import java.util.regex.Matcher;
@@ -59,9 +75,6 @@ public class HttpContentHandler implements ContentHandler {
 			} else if (pattern_h2.matcher(localName).find()) {
 				Log.i(TAG, "[h2] start element");
 				mInH2Tag = true;
-				if (mCurrentEntryItem != null && mListener != null) {
-					mListener.onEntryItem(mCurrentEntryItem);
-				}
 				mCurrentEntryItem = new EntryItem();
 
 			} else if (pattern_h3.matcher(localName).find()) {
@@ -115,13 +128,13 @@ public class HttpContentHandler implements ContentHandler {
 				mInATag = false;
 
 			} else if (pattern_p.matcher(localName).find()) {
-				Log.i(TAG, "[p] start element");
+				Log.i(TAG, "[p] end element");
 				mInPTag = false;
-
-			} else if (pattern_div.matcher(localName).find()) {
 				if (mCurrentEntryItem != null && mListener != null) {
 					mListener.onEntryItem(mCurrentEntryItem);
 				}
+
+			} else if (pattern_div.matcher(localName).find()) {
 				mBodyStart = false;
 				Log.i(TAG, "!!! set mBodyStart to false !!!");
 
@@ -150,10 +163,13 @@ public class HttpContentHandler implements ContentHandler {
 				String str = new String(ch, start, length);
 				Log.i(TAG, "[h2] characters str=" + str);
 				Matcher matcher = pattern_category.matcher(str);
-				mCurrentEntryItem.category = "";
 				int pos = 0;
 				while (matcher.find()) {
-					mCurrentEntryItem.category += matcher.group();
+					if (Misc.isNullOfEmpty(mCurrentEntryItem.category)) {
+						mCurrentEntryItem.category = matcher.group();
+					} else {
+						mCurrentEntryItem.category += " " + matcher.group();
+					}
 					pos = matcher.end();
 				}
 				mCurrentEntryItem.title = str.substring(pos).trim();
@@ -167,13 +183,27 @@ public class HttpContentHandler implements ContentHandler {
 				Log.i(TAG, "[a] characters str=" + mCurrentEntryItem.name);
 
 			} else if (mInPTag) {
-				if (mCurrentEntryItem.comment == null) {
-					mCurrentEntryItem.comment = "";
-				}
 				String str = new String(ch, start, length);
-				mCurrentEntryItem.comment += str;
 				Log.i(TAG, "[p] characters str=" + str);
-
+				
+				Matcher matcher = pattern_category.matcher(str);
+				if (matcher.find()) {
+					if (!Misc.isNullOfEmpty(mCurrentEntryItem.url)) {
+						if (mCurrentEntryItem != null && mListener != null) {
+							mListener.onEntryItem(mCurrentEntryItem);
+						}
+						EntryItem prevItem = mCurrentEntryItem;
+						mCurrentEntryItem = new EntryItem();
+						mCurrentEntryItem.title = prevItem.title;
+						mCurrentEntryItem.category = prevItem.category;
+					}
+					mCurrentEntryItem.subCategory = matcher.group();
+				} else {
+					if (Misc.isNullOfEmpty(mCurrentEntryItem.comment)) {
+						mCurrentEntryItem.comment = "";
+					}
+					mCurrentEntryItem.comment += str;
+				}
 			}
 		}
 	}

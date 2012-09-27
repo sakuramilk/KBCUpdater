@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string-array name="update_interval_entries">
+       <item>1 時間</item>
+		<item>3 時間</item>
+		<item>6 時間</item>
+		<item>12 時間</item>
+		<item>1 日</item>
+	</string-array>
+</resources>
